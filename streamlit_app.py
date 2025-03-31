@@ -40,5 +40,5 @@ else:
     selected_video = st.selectbox("Choose a video to view:", videos)
     video_url = get_video_url(selected_video)
     
-    st.video(video_url)
+    st.video(video_url, format = 'video/mp4')
     st.write(f"Video Source: {video_url}")
