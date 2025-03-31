@@ -5,9 +5,9 @@ from botocore.exceptions import NoCredentialsError
 # AWS S3 Configuration from secrets.toml
 AWS_ACCESS_KEY = st.secrets["aws"]["AWS_ACCESS_KEY"]
 AWS_SECRET_KEY = st.secrets['aws']["AWS_SECRET_KEY"]
-NON_ANNOTATED_BUCKET_NAME = st.secrets["NON_ANNOTATED_BUCKET_NAME"]
-ANNOTATED_BUCKET_NAME = st.secrets["ANNOTATED_BUCKET_NAME"]
-REGION_NAME = st.secrets["REGION_NAME"]
+NON_ANNOTATED_BUCKET_NAME = st.secrets['aws']["NON_ANNOTATED_BUCKET_NAME"]
+ANNOTATED_BUCKET_NAME = st.secrets['aws']["ANNOTATED_BUCKET_NAME"]
+REGION_NAME = st.secrets['aws']["REGION_NAME"]
 
 # Initialize S3 client
 s3 = boto3.client(
