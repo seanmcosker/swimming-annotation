@@ -28,7 +28,12 @@ def list_videos():
         return []
 
 def get_video_url(video_key):
-    return f"https://{NON_ANNOTATED_BUCKET_NAME}.s3.{REGION_NAME}.amazonaws.com/{video_key}"
+    # Generate a pre-signed URL for private S3 buckets
+    return s3.generate_presigned_url(
+        'get_object',
+        Params={'Bucket': NON_ANNOTATED_BUCKET_NAME, 'Key': video_key},
+        ExpiresIn=3600  # URL expires in 1 hour
+    )
 
 # Streamlit UI
 st.title("Annotated Swimming Videos")
@@ -40,5 +45,6 @@ else:
     selected_video = st.selectbox("Choose a video to view:", videos)
     video_url = get_video_url(selected_video)
     
-    st.video(video_url, format = 'video/mp4')
+    st.write(f"Video URL: {video_url}")  # Debugging: Display the video URL
+    st.video(video_url, format="video/mp4")  # Ensure correct format
     st.write(f"Video Source: {video_url}")
