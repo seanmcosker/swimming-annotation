@@ -42,9 +42,16 @@ videos = list_videos()
 if not videos:
     st.write("No videos found in the S3 bucket.")
 else:
-    selected_video = st.selectbox("Choose a video to view:", videos)
-    video_url = get_video_url(selected_video)
-    
-    #st.write(f"Video URL: {video_url}")  # Debugging: Display the video URL
-    st.video(video_url, format="video/mp4")  # Ensure correct format
-    st.write(f"Video Source: {video_url}")
+    col1, col2 = st.columns(2)  # Create two columns for side-by-side display
+
+    with col1:
+        selected_video_1 = st.selectbox("Choose the first video to view:", videos, key="video1")
+        video_url_1 = get_video_url(selected_video_1)
+        st.video(video_url_1, format="video/mp4")
+        st.write(f"Video 1 Source: {video_url_1}")
+
+    with col2:
+        selected_video_2 = st.selectbox("Choose the second video to view:", videos, key="video2")
+        video_url_2 = get_video_url(selected_video_2)
+        st.video(video_url_2, format="video/mp4")
+        st.write(f"Video 2 Source: {video_url_2}")
