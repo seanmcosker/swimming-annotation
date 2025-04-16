@@ -37,11 +37,13 @@ def get_video_url(video_key):
 
 def list_annotated_videos():
     try:
-        response = s3.list_objects_v2(Bucket = ANNOTATED_BUCKET_NAME)
-        if "Contents" in response:
-            return [obj["Key"] for obj in response['Contents'] if obj['Key'].lower().endswith((".mp4"))]
-    except:
-        st.error("Error")
+        response = s3.list_objects_v2(Bucket=NON_ANNOTATED_BUCKET_NAME)
+        if 'Contents' in response:
+            return [obj['Key'] for obj in response['Contents'] if obj['Key'].lower().endswith(('.mp4', '.avi', '.mov'))]
+        return []
+    except NoCredentialsError:
+        st.error("AWS credentials not found.")
+        return []
 
 # Streamlit multipage setup
 st.sidebar.title("Navigation")
