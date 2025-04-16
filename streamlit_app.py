@@ -35,11 +35,29 @@ def get_video_url(video_key):
         ExpiresIn=3600  # URL expires in 1 hour
     )
 
+def list_annotated_videos():
+    try:
+        response = s3.list_objects_v2(Bucket = ANNOTATED_BUCKET_NAME)
+        if "Contents" in response:
+            return [obj["Key"] for obj in response['Contents'] if obj['Key'].lower().endswith(".mp4")]
+    except:
+        st.error("Error")
+
 # Streamlit multipage setup
 st.sidebar.title("Navigation")
-page = st.sidebar.radio("Go to", ["Video Viewer", "Author Bio"])
+page = st.sidebar.radio("Go to", ["Annotated Videos", "Video Viewer", "Author Bio"])
 
-if page == "Video Viewer":
+if page == "Annotated Videos":
+    videos = list_annotated_videos()
+    if not videos:
+        st.write("No videos found in the S3 bucket.")
+    
+    selected_video = st.selectbox("Choose annotated video to view", videos)
+    video_url = get_video_url(selected_video)
+    st.video(video_url, format='video/mp4')
+    
+
+elif page == "Video Viewer":
     videos = list_videos()
     if not videos:
         st.write("No videos found in the S3 bucket.")
@@ -50,13 +68,13 @@ if page == "Video Viewer":
             selected_video_1 = st.selectbox("Choose the first video to view:", videos, key="video1")
             video_url_1 = get_video_url(selected_video_1)
             st.video(video_url_1, format="video/mp4")
-            st.write(f"Video 1 Source: {video_url_1}")
+            #st.write(f"Video 1 Source: {video_url_1}")
 
         with col2:
             selected_video_2 = st.selectbox("Choose the second video to view:", videos, key="video2")
             video_url_2 = get_video_url(selected_video_2)
             st.video(video_url_2, format="video/mp4")
-            st.write(f"Video 2 Source: {video_url_2}")
+            #st.write(f"Video 2 Source: {video_url_2}")
 
 elif page == "Author Bio":
     st.title("Author Bio")
