@@ -39,7 +39,7 @@ def list_annotated_videos():
     try:
         response = s3.list_objects_v2(Bucket = ANNOTATED_BUCKET_NAME)
         if "Contents" in response:
-            return [obj["Key"] for obj in response['Contents'] if obj['Key'].lower().endswith(".mp4")]
+            return [obj["Key"] for obj in response['Contents'] if obj['Key'].lower().endswith((".mp4"))]
     except:
         st.error("Error")
 
