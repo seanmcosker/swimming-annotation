@@ -26,6 +26,7 @@ def list_videos():
     except NoCredentialsError:
         st.error("AWS credentials not found.")
         return []
+    
 
 def get_video_url(video_key):
     # Generate a pre-signed URL for private S3 buckets
@@ -44,19 +45,30 @@ def list_annotated_videos():
     except NoCredentialsError:
         st.error("AWS credentials not found.")
         return []
+    
+def load_video_from_s3(key):
+    try:
+        video_obj = s3.get_object(Bucket=ANNOTATED_BUCKET_NAME, Key=key)
+        return video_obj['Body'].read()
+    except Exception as e:
+        st.error(f"Failed to load video: {e}")
+        return None
 
-# Streamlit multipage setup
+
 st.sidebar.title("Navigation")
 page = st.sidebar.radio("Go to", ["Annotated Videos", "Video Viewer", "Author Bio"])
 
 if page == "Annotated Videos":
-    videos = list_annotated_videos()
-    if not videos:
-        st.write("No videos found in the S3 bucket.")
-    
-    selected_video = st.selectbox("Choose annotated video to view", videos)
-    video_url = get_video_url(selected_video)
-    st.video(video_url, format='video/mp4')
+    video_keys = list_annotated_videos()
+
+    if video_keys:
+        selected_video_key = st.selectbox("Select a video", video_keys)
+        video_bytes = load_video_from_s3(selected_video_key)
+        if video_bytes:
+            st.video(video_bytes)
+    else:
+        st.write("No annotated videos found.")
+
     
 
 elif page == "Video Viewer":
